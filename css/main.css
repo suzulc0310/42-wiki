@@ -108,6 +108,9 @@ q{
 .toc ul li a:hover{
     font-weight: bold;
 }
+footer{
+    margin-top: 5em;
+}
 .footer_columns{
     display: flex;
     align-items: flex-end;
