@@ -108,3 +108,15 @@ q{
 .toc ul li a:hover{
     font-weight: bold;
 }
+.footer_columns{
+    display: flex;
+    align-items: flex-end;
+    padding: 0 1em 1em;
+}
+.footer_column{
+    width: 50%;
+}
+.footer_column a{
+    text-decoration: none;
+    font-weight: bold;
+}

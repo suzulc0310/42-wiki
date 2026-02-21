@@ -113,3 +113,10 @@ q{
 .info{
     padding: 0 1em;
 }
+.footer_column{
+    padding: 1em;
+}
+.footer_column a{
+    text-decoration: none;
+    font-weight: bold;
+}
