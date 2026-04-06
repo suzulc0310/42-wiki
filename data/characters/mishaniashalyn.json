@@ -1,0 +1,54 @@
+{
+  "id": "mishaniashalyn",
+  "title": "MishaniaShalyn",
+
+  "required": {
+    "name": "",
+    "birthDate": "15 марта 2024 г. (дата создания сквада)",
+    "city": ["Воронеж"],
+    "squad": "Хай Сквад (ныне Хай SUP)",
+    "color": "#C91E1E",
+    "quote": "Танк, ванна, сфера Дайсона... Всё это было и будет на концертах 5opka x MellSher.",
+    "description": "Один из старейших 42 сквадов (2-й или 3-й по счёту). Занимаются саппортской деятельностью, создают перформансы для концертов."
+  },
+  "info": {
+    "activity": "Саппорты, создание перформансов"
+  },
+  "styles": ["Дефолт"],
+  "images": {
+    "Дефолт": ["https://i.pinimg.com/736x/2d/dc/fb/2ddcfb5dd830bf3c3679baf59dda63f2.jpg"]
+  },
+  "socials": {
+    "telegram": "https://t.me/hypology36",
+    "tiktok": "https://www.tiktok.com/@hypology36"
+  },
+  "sections": [
+    {
+      "title": "История сквада",
+      "type": "text",
+      "content": "После анонса первого тура 5opka и Mellsher создали конференцию в Telegram. Сначала снимали видео, делали перформансы. К туру «Мужья на час» сделали леопардовую ванну на колёсах. После этого почти весь состав покинул сквад. К туру «Впервые в 3D» сделали рабочий танк. На февраль 2026 года — новый состав."
+    },
+    {
+      "title": "Концертная деятельность",
+      "type": "text",
+      "content": "Концерт «Старые шлягеры» — первый в туре, запомнился эмоциями. Концерт «Мужья на час» — покатали Пятёрку на ванне. Концерт «Впервые в 3D» — охранники кукольного театра вызвали полицию из-за 3-метровой купюры с надписью «ФУ БЛЯ»."
+    },
+    {
+      "title": "Творческие предпочтения",
+      "type": "text",
+      "content": "Лучший фандом — 42. Топ-4 исполнителя: Mellsher, 5opka, Слава КПСС, Lida."
+    }
+  ],
+  "gallery": [
+    "https://i.pinimg.com/originals/b2/2f/d5/b22fd54e349c3e3d23ee4fb12a8b47b2.jpg",
+    "https://i.pinimg.com/736x/61/34/7d/61347d7081dcc34c4b36d10d83d5f8d9.jpg",
+    "https://i.pinimg.com/736x/fb/b2/89/fbb289c2cfb4aabe4d66c568afda4df0.jpg",
+    "https://i.pinimg.com/736x/a2/84/f2/a284f2bd9c8b773b75462c96e0d47e28.jpg",
+    "https://i.pinimg.com/736x/80/37/1e/80371e47d200e2a40ad66931d1825fd7.jpg",
+    "https://i.pinimg.com/736x/ef/f1/b9/eff1b917eb8e49792b43327d0e6152a2.jpg",
+    "https://i.pinimg.com/736x/e6/ca/95/e6ca95ca24cfd008ff8fa919c206c736.jpg",
+    "https://i.pinimg.com/736x/0a/95/d3/0a95d3a27b199e239ee3a25111fb03f7.jpg",
+    "https://i.pinimg.com/736x/fe/01/f9/fe01f9c564e4de26c0518fa844aeeba0.jpg",
+    "https://i.pinimg.com/736x/0e/43/79/0e43798d6991a64eb3a75979ec0835f3.jpg"
+  ]
+}
