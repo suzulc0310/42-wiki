@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" media="(min-width: 1260px)" href="css/main.css?v=1.2.0">
+    <link rel="stylesheet" media="(max-width: 1260px)" href="css/mobile.css?v=1.2.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Cache-Control" content="post-check=0, pre-check=0" />
+    <meta http-equiv="Last-Modified" content="0">
+    <meta http-equiv="Cache-Control" content="private, no-store">
+    <title>Фильтр — 42 вики</title>
+    <style>
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(var(--default), 0.1) 0%, rgba(var(--default), 0.05) 100%);
+            border-radius: 10px;
+            border-left: 4px solid rgba(var(--default));
+        }
+        .squad-card.featured {
+            margin-bottom: 20px;
+            cursor: default;
+        }
+        .squad-card.featured:hover {
+            transform: none;
+            box-shadow: 0 5px 15px rgba(var(--default), 0.2);
+        }
+        .squad-card.featured a:hover {
+            text-decoration: underline;
+        }
+        .filter-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: rgba(var(--default));
+        }
+        .filter-type {
+            font-size: 18px;
+            color: #666;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(var(--default), 0.3);
+        }
+        #results-count {
+            margin: 10px 0 20px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            border: 1px dashed rgba(var(--default), 0.3);
+        }
+        .squads-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid rgba(var(--default), 0.2);
+        }
+        .squads-title {
+            font-size: 20px;
+            color: rgba(var(--default));
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(var(--default));
+        }
+        .squads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .squad-card {
+            border: 1px solid rgba(var(--default), 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(var(--default), 0.05) 0%, rgba(var(--default), 0.02) 100%);
+        }
+        .squad-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(var(--default));
+            box-shadow: 0 5px 15px rgba(var(--default), 0.2);
+        }
+        .squad-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: rgba(var(--default));
+            margin-bottom: 8px;
+        }
+        .squad-members {
+            font-size: 14px;
+            color: #666;
+        }
+        .squad-members span {
+            color: rgba(var(--default));
+            font-weight: bold;
+        }
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .character-card {
+            border: 2px solid rgba(var(--default), 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(var(--default));
+            transition: height 0.3s;
+        }
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(var(--default), 0.3);
+            border-color: rgba(var(--default));
+        }
+        .character-card:hover::before {
+            height: 6px;
+        }
+        .character-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-bottom: 2px solid rgba(var(--default), 0.2);
+        }
+        .character-info {
+            padding: 15px;
+            background: white;
+        }
+        .character-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: rgba(var(--default));
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(var(--default), 0.2);
+            padding-bottom: 8px;
+        }
+        .character-detail {
+            font-size: 14px;
+            color: #444;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 18px;
+            color: #666;
+            background: #f9f9f9;
+            border-radius: 12px;
+            border: 2px dashed rgba(var(--default), 0.3);
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+  <div class="header-container">
+        <div class="header-left">
+            <a href="./index.html"><img class="logo" src="res/logo_header.svg" alt="логотип 42 вики" width="120"></a>
+        </div>
+        <nav class="desktop-nav">
+            <div class="nav-item">
+                <span>Братухи ▾</span>
+                <ul id="nav-characters-desktop" class="dropdown"><li>Загрузка...</li></ul>
+            </div>
+            <div class="nav-item">
+                <span>Города ▾</span>
+                <ul id="nav-cities-desktop" class="dropdown"><li>Загрузка...</li></ul>
+            </div>
+            <div class="nav-item">
+                <span>Сквады ▾</span>
+                <ul id="nav-squads-desktop" class="dropdown"><li>Загрузка...</li></ul>
+            </div>
+        </nav>
+
+        <div class="search-box">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="wiki-search" placeholder="поиск">
+            </div>
+            <ul id="search-results"></ul>
+        </div>
+        <div class="header-auth">
+            <button class="btn-login">войти</button>
+            <button class="btn-reg">регистрация</button>
+        </div>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+    </div>
+        <div class="overlay" id="overlay"></div>
+        <div class="sidebar" id="sidebar">
+            <a href="./index.html"><img class="logo" src="res/logo_header.svg" alt="логотип 42 вики" width="100px"></a>
+            <button class="sidebar-close" id="closeSidebar">×</button>
+            <div class="sidebar-content">
+                <div class="search-box">
+                   <div class="search-wrapper">
+                       <span class="search-icon">🔍</span>
+                       <input type="text" id="mobile-wiki-search" placeholder="поиск">
+                   </div>
+                   <ul id="mobile-search-results"></ul>
+               </div>
+                <h3>Навигация ▾</h3>
+                <nav>
+                    <ul id="nav-characters">
+                        <li>Загрузка...</li>
+                    </ul>
+                </nav>
+                <h3>Города ▾</h3>
+                <nav>
+                    <ul id="nav-cities">
+                        <li>Загрузка...</li>
+                    </ul>
+                </nav>
+                <h3>Сквады ▾</h3>
+                <nav>
+                    <ul id="nav-squads">
+                        <li>Загрузка...</li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="main_logo">
+            <a href="./index.html"><img src="res/logo_Square.png" alt="логотип" width="200px"></a>
+        </div>
+        
+        <div class="main">
+            <div class="filter-header">
+                <span class="filter-title" id="filter-title">Загрузка...</span>
+                <span class="filter-type" id="filter-type"></span>
+            </div>
+            <div id="results-count"></div>
+            <div id="squads-section" style="display: none;">
+                <div class="squads-section">
+                    <h3 class="squads-title">🏢 Сквады в этом городе</h3>
+                    <div class="squads-grid" id="squads-grid"></div>
+                </div>
+            </div>
+            <div class="characters-grid" id="characters-grid"></div>
+        </div>
+    </main>
+    <footer>
+        <img class="logo" src="res/logo_header.svg" alt="логотип 42 вики" width="100px">
+        <div class="footer_columns">
+            <div class="footer_column">
+                <p>42 вики - проект для освещения информации об участниках движения "42 братухи".</p>
+                <p>Текст доступен по согласованию с героем статьи.</p>
+                <p>Информация предоставлена героем статьи. Авторы не несут ответственности за достоверность предоставленной героем статьи информации.</p>
+            </div>
+            <div class="footer_column">
+                <p>Сайт предоставлен 42 сеструхой Дашей Деменцией</p>
+                <p>Информацию об обновлениях можно найти в
+                <br>
+                <a href="">
+                    <svg width="20px" viewBox="0 0 32 32">
+                        <path d="M29.919 6.163l-4.225 19.925c-0.319 1.406-1.15 1.756-2.331 1.094l-6.438-4.744-3.106 2.988c-0.344 0.344-0.631 0.631-1.294 0.631l0.463-6.556 11.931-10.781c0.519-0.462-0.113-0.719-0.806-0.256l-14.75 9.288-6.35-1.988c-1.381-0.431-1.406-1.381 0.288-2.044l24.837-9.569c1.15-0.431 2.156 0.256 1.781 2.013z"/>
+                    </svg>
+                    телеграм-канале
+                </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="js/script.js?v=1.2.0"></script>
+    <script src="js/navigation.js?v=1.2.0"></script>
+    <script src="js/filter.js?v=1.2.0"></script>
+</body>
+</html>
