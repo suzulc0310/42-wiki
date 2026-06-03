@@ -3,19 +3,44 @@ const EntityRenderer = {
     currentStyle: 'Дефолт',
     entityType: 'character',
     async init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const type = urlParams.get('type') || 'character';
-        const id = urlParams.get('id');
-        if (!id) {
-            this.showError('Не указан ID');
-            return;
-        }
-        this.entityType = type;
-        await this.loadEntity(type, id);
-    },
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    const type = urlParams.get('type') || 'character';
+    
+    console.log("Пытаемся загрузить ID:", id);
+
+    if (!id || id === 'undefined') {
+        this.showError('Персонаж не указан (ID undefined)');
+        return;
+    }
+
+    if (window.NavigationLoader) {
+        await window.NavigationLoader.loadCharacterList();
+    }
+
+    this.entityType = type;
+    await this.loadEntity(type, id);
+    
+    this.setupEditButton();
+},
+
+setupEditButton() {
+    const editBtn = document.getElementById('action-edit');
+    if (editBtn && this.currentData && this.currentData.id) {
+        // Убираем старый обработчик, если был
+        const newEditBtn = editBtn.cloneNode(true);
+        editBtn.parentNode.replaceChild(newEditBtn, editBtn);
+        
+        newEditBtn.onclick = (e) => {
+            e.preventDefault();
+            window.location.href = `admin.php?edit=${this.currentData.id}`;
+        };
+    }
+},
     async loadEntity(type, id) {
         try {
-            const response = await fetch(`data/${type}s/${id}.json`);
+            const url = `get-entity.php?type=${type}&id=${id}`; 
+            const response = await fetch(url);
             if (!response.ok) throw new Error('Файл не найден');
             this.currentData = await response.json();
             this.setCharacterColor(this.currentData.required?.color || '#c91e1e');
@@ -58,6 +83,9 @@ const EntityRenderer = {
         if (this.entityType === 'character') {
             this.calculateAge();
         }
+        if (window.imageModalInstance) {
+        window.imageModalInstance.reinit();
+        }
     },
     renderHeader() {
         document.getElementById('entity-name').textContent = this.currentData.title;
@@ -67,11 +95,13 @@ const EntityRenderer = {
         const container = document.getElementById('info-section');
         const data = this.currentData;
         let html = '';
+        
         Object.entries(data.required || {}).forEach(([key, value]) => {
             if (!value) return;
             if (key === 'color' || key === 'quote' || key === 'description') {
                 return;
             }
+            
             let label = {
                 'name': 'Имя',
                 'founded': 'Основан',
@@ -83,10 +113,16 @@ const EntityRenderer = {
                 'birthDate': 'Дата рождения',
                 'squad': 'Сквад'
             }[key] || key;
+            
             let displayValue = value;
+            if (key === 'city' && Array.isArray(value)) {
+                displayValue = value.join(', ');
+            }
+            
             if (key === 'leader') {
                 displayValue = `<a href="entity.html?type=character&id=${value}">${this.getCharacterName(value)}</a>`;
             }
+            
             html += `<div class="aside_info"><h3>${label}</h3><p>${displayValue}</p></div>`;
         });
         if (data.info) {
@@ -100,6 +136,7 @@ const EntityRenderer = {
                 html += `<div class="aside_info"><h3>${label}</h3><p>${value}</p></div>`;
             });
         }
+        
         if (data.socials && Object.keys(data.socials).length > 0) {
             let socialHtml = '';
             Object.entries(data.socials).forEach(([key, url]) => {
@@ -108,6 +145,7 @@ const EntityRenderer = {
             });
             html += `<div class="aside_info"><h3>Соц. сети</h3><p>${socialHtml}</p></div>`;
         }
+        
         container.innerHTML = html;
     },
     renderDescription() {
@@ -204,24 +242,52 @@ const EntityRenderer = {
     renderGallery() {
         const title = document.getElementById('gallery-title');
         const gallery = document.getElementById('bottom-gallery');
+        
         if (this.currentData.gallery && this.currentData.gallery.length > 0) {
             title.style.display = 'block';
             gallery.style.display = 'flex';
             gallery.innerHTML = '';
-            this.currentData.gallery.forEach(src => {
+            
+            this.currentData.gallery.forEach((src, index) => {
                 const div = document.createElement('div');
                 div.className = 'gallery_img';
                 const img = document.createElement('img');
-                img.src = src;
+                img.src = src + '?t=' + Date.now() + index;
                 img.alt = '';
                 img.style.cursor = 'pointer';
+                img.onerror = () => {
+                    img.src = 'https://via.placeholder.com/300x200?text=Image+not+found';
+                };
                 div.appendChild(img);
                 gallery.appendChild(div);
             });
-        } else {
-            title.style.display = 'none';
-            gallery.style.display = 'none';
         }
+    },
+
+    renderStyleGallery() {
+        const container = document.getElementById('style-gallery');
+        if (!this.currentData.images) {
+            container.style.display = 'none';
+            return;
+        }
+        
+        container.innerHTML = '';
+        container.style.display = 'block';
+        
+        Object.entries(this.currentData.images).forEach(([styleName, imageUrls]) => {
+            imageUrls.forEach((src, idx) => {
+                const img = document.createElement('img');
+                img.src = src + '?t=' + Date.now() + idx;
+                img.dataset.style = styleName;
+                img.alt = `${this.currentData.title} - ${styleName}`;
+                img.style.display = styleName === this.currentStyle ? 'block' : 'none';
+                img.style.cursor = 'pointer';
+                img.onerror = () => {
+                    img.src = 'https://via.placeholder.com/300x200?text=Image+not+found';
+                };
+                container.appendChild(img);
+            });
+        });
     },
     renderStyleButtons() {
         const container = document.getElementById('style-list');

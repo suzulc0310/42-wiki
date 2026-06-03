@@ -37,10 +37,18 @@ document.addEventListener('DOMContentLoaded', function() {
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
 
-    document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && sidebar.classList.contains('open')) {
             closeSidebar();
         }
+    });
+});
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('img').forEach(img => {
+        img.onerror = function() {
+            console.warn('Не загрузилось изображение:', this.src);
+            this.src = 'https://via.placeholder.com/300x200?text=No+Image';
+        };
     });
 });
 function hexToRgb(hex) {
@@ -179,6 +187,16 @@ class ImageModal {
     init() {
         this.createModal();
         this.setupAllImages();
+    }
+    reinit() {
+    this.images = Array.from(document.querySelectorAll('.gallery_img, .main_img, .section_img')).map(img => ({
+        src: img.src,
+        alt: img.alt
+    }));
+
+    document.querySelectorAll('.gallery_img, .main_img, .section_img').forEach((img, index) => {
+        img.onclick = () => this.open(index);
+    });
     }
     createModal() {
         const existingModal = document.querySelector('.image-modal');

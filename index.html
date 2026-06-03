@@ -57,25 +57,22 @@
             <button class="sidebar-close" id="closeSidebar">×</button>
             <div class="sidebar-content">
                 <div class="search-box">
-                   <div class="search-wrapper">
-                       <span class="search-icon">🔍</span>
-                       <input type="text" id="mobile-wiki-search" placeholder="поиск">
-                   </div>
-                   <ul id="mobile-search-results"></ul>
-               </div>
-                <h3>Навигация ▾</h3>
+                    <input type="text" id="mobile-wiki-search" placeholder="🔍 поиск">
+                    <ul id="mobile-search-results"></ul>
+                </div>
+                <h3>Навигация</h3>
                 <nav>
                     <ul id="nav-characters">
                         <li>Загрузка...</li>
                     </ul>
                 </nav>
-                <h3>Города ▾</h3>
+                <h3>Города</h3>
                 <nav>
                     <ul id="nav-cities">
                         <li>Загрузка...</li>
                     </ul>
                 </nav>
-                <h3>Сквады ▾</h3>
+                <h3>Сквады</h3>
                 <nav>
                     <ul id="nav-squads">
                         <li>Загрузка...</li>
@@ -338,6 +335,7 @@
     </footer>
 <script src="js/script.js?v=1.2.0"></script>
 <script src="js/navigation.js?v=1.2.0"></script>
+<script src="js/home.js?v=1.2.0"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const savedColor = localStorage.getItem('characterColor');
@@ -356,6 +354,16 @@
         document.documentElement.style.setProperty('--default', color);
         sessionStorage.setItem('tempColor', color);
     })();
+</script>
+<script>
+    console.log('URL параметры:', new URLSearchParams(window.location.search).toString());
+    setTimeout(() => {
+        if (window.NavigationLoader && window.NavigationLoader.characterList) {
+            console.log('Загружено персонажей:', window.NavigationLoader.characterList.length);
+        } else {
+            console.log('NavigationLoader не загружен или список пуст');
+        }
+    }, 1000);
 </script>
 </body>
 </html>

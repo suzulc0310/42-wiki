@@ -3,8 +3,10 @@ const FilterPage = {
         const urlParams = new URLSearchParams(window.location.search);
         const city = urlParams.get('city');
         const squad = urlParams.get('squad');
+        console.log('FilterPage инициализирован, параметры:', {city, squad});
+        
         if (!city && !squad) {
-            this.showError('Не указан параметр фильтрации');
+            console.log('Нет параметров фильтрации, пропускаем');
             return;
         }
         await NavigationLoader.loadCharacterList();
@@ -130,55 +132,39 @@ const FilterPage = {
         document.getElementById('filter-title').textContent = `${type}: ${value}`;
         document.getElementById('filter-type').textContent = `${characters.length} участников`;
         document.getElementById('results-count').innerHTML = `Найдено участников: <strong>${characters.length}</strong>`;
+        
         const grid = document.getElementById('characters-grid');
         if (characters.length === 0) {
             grid.innerHTML = '<div class="no-results">Никого не найдено 😢</div>';
             return;
         }
+
         grid.innerHTML = characters.map(char => {
-        // Отображение городов: если массив — показываем через запятую
-        let cityDisplay = char.city;
-        if (Array.isArray(char.city)) {
-            cityDisplay = char.city.join(', ');
-        }
-        
-        return `
-            <div class="character-card" onclick="location.href='entity.html?type=character&id=${char.id}'">
-                <div class="character-image" id="img-${char.id}">
-                    <div style="padding: 20px; text-align: center; color: #666;">Загрузка...</div>
+            let cityDisplay = char.city;
+            if (Array.isArray(char.city)) {
+                cityDisplay = char.city.join(', ');
+            }
+
+            return `
+                <div class="character-card" onclick="location.href='entity.html?type=character&id=${char.id}'">
+                    <div class="character-image" id="img-${char.id}">
+                        <div style="padding: 20px; text-align: center; color: #666;">Загрузка...</div>
+                    </div>
+                    <div class="character-info">
+                        <div class="character-name">${char.name}</div>
+                        <div class="character-detail">🏙️ ${cityDisplay}</div>
+                        <div class="character-detail">👥 ${char.squad || 'Без сквада'}</div>
+                    </div>
                 </div>
-                <div class="character-info">
-                    <div class="character-name">${char.name}</div>
-                    <div class="character-detail">🏙️ ${char.city}</div>
-                    <div class="character-detail">👥 ${char.squad || 'Без сквада'}</div>
-                </div>
-            </div>
-        `;}).join('');
+            `;
+        }).join('');
     },
     async loadImagesForCharacters(characters) {
         for (const char of characters) {
-            try {
-                const response = await fetch(`data/characters/${char.id}.json`);
-                if (!response.ok) continue;
-                const data = await response.json();
-                let firstImage = null;
-                if (data.images) {
-                    const firstStyle = Object.keys(data.images)[0];
-                    if (firstStyle && data.images[firstStyle].length > 0) {
-                        firstImage = data.images[firstStyle][0];
-                    }
-                }
-                if (!firstImage && data.gallery && data.gallery.length > 0) {
-                    firstImage = data.gallery[0];
-                }
-                if (firstImage) {
-                    const imgContainer = document.getElementById(`img-${char.id}`);
-                    if (imgContainer) {
-                        imgContainer.innerHTML = `<img src="${firstImage}" alt="${char.name}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                    }
-                }
-            } catch (error) {
-                console.error(`Ошибка загрузки изображения для ${char.id}:`, error);
+            const imgContainer = document.getElementById(`img-${char.id}`);
+            if (imgContainer && char.image) {
+                const uniqueUrl = char.image + '?t=' + Date.now();
+                imgContainer.innerHTML = `<img src="${char.image}" alt="${char.name}" style="width: 100%; height: 100%; object-fit: cover;">`;
             }
         }
     },
